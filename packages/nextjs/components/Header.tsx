@@ -1,120 +1,50 @@
 "use client";
 
-import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Logo } from "./Logo";
-import { Bars3Icon, BugAntIcon, HomeIcon } from "@heroicons/react/24/outline";
-import {
-  DappConsoleButton,
-  FaucetButton,
-  RainbowKitCustomConnectButton,
-  SuperchainFaucetButton,
-} from "~~/components/scaffold-eth";
-import { useOutsideClick } from "~~/hooks/scaffold-eth";
-import { cn } from "~~/utils/cn";
+import { RainbowKitCustomConnectButton } from "./scaffold-eth";
 
-type HeaderMenuLink = {
-  label: string;
-  href: string;
-  icon?: React.ReactNode;
-};
-
-export const menuLinks: HeaderMenuLink[] = [
-  {
-    label: "Home",
-    href: "/",
-    icon: <HomeIcon className="h-4 w-4" />,
-  },
-  {
-    label: "Debug Contracts",
-    href: "/debug",
-    icon: <BugAntIcon className="h-4 w-4" />,
-  },
-];
-
-export const HeaderMenuLinks = () => {
+export const Header = () => {
   const pathname = usePathname();
 
-  return (
-    <>
-      {menuLinks.map(({ label, href, icon }) => {
-        const isActive = pathname === href;
-        return (
-          <li key={href}>
-            <Link
-              href={href}
-              passHref
-              className={cn(
-                "relative flex items-center justify-between px-4 py-2 text-sm transition-colors duration-200",
-                isActive ? "bg-base-100 primary-content" : "text-slate-400",
-              )}
-            >
-              {icon}
-              {label}
-            </Link>
-          </li>
-        );
-      })}
-    </>
-  );
-};
+  const isActive = (path: string) => pathname === path;
 
-/**
- * Site header
- */
-export const Header = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const burgerMenuRef = useRef<HTMLDivElement>(null);
-  useOutsideClick(
-    burgerMenuRef,
-    useCallback(() => setIsDrawerOpen(false), []),
-  );
+  const navItems = [
+    { label: "Home", href: "/" },
+    { label: "Marketplace", href: "/marketplace" },
+    { label: "DEX", href: "/dex" },
+    { label: "Events", href: "/events" },
+  ];
 
   return (
-    <header className="sticky lg:static top-0 navbar bg-base-900 min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2 border-b border-[#252442]">
-      <div className="navbar-start w-auto lg:w-1/2">
-        <div className="lg:hidden dropdown" ref={burgerMenuRef}>
-          <label
-            tabIndex={0}
-            className={`ml-1 btn btn-ghost ${isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"}`}
-            onClick={() => {
-              setIsDrawerOpen(prevIsOpenState => !prevIsOpenState);
-            }}
-          >
-            <Bars3Icon className="h-1/2" />
-          </label>
-          {isDrawerOpen && (
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-              onClick={() => {
-                setIsDrawerOpen(false);
-              }}
-            >
-              <HeaderMenuLinks />
-            </ul>
-          )}
-        </div>
-        <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
-          <div className="flex relative">
-            <Logo size={24} />
+    <header className="sticky top-0 z-40 border-b border-dayak-green-900 bg-base-100/95 backdrop-blur supports-[backdrop-filter]:bg-base-100/60">
+      <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl hover:opacity-80 transition">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-dayak-green-500 to-dayak-green-700 flex items-center justify-center">
+            <span className="text-white font-bold">W</span>
           </div>
-          <div className="flex flex-col">
-            <span className="font-bold leading-tight">Scaffold-Lisk</span>
-            <span className="text-xs">Ethereum dev stack</span>
-          </div>
+          <span className="hidden sm:inline text-dayak-green-400">wapSewap</span>
         </Link>
-        <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
-          <HeaderMenuLinks />
-        </ul>
-      </div>
-      <div className="navbar-end flex-grow mr-4">
+
+        {/* Nav Links */}
+        <div className="hidden md:flex items-center gap-1">
+          {navItems.map(item => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`px-4 py-2 rounded-lg transition ${
+                isActive(item.href) ? "bg-dayak-green-600 text-white" : "text-base-content hover:bg-dayak-green-900/30"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Connect Button */}
         <RainbowKitCustomConnectButton />
-        <FaucetButton />
-        <SuperchainFaucetButton />
-        <DappConsoleButton />
-      </div>
+      </nav>
     </header>
   );
 };

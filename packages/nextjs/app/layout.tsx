@@ -9,9 +9,9 @@ const baseUrl = process.env.VERCEL_URL
   : `http://localhost:${process.env.PORT || 3000}`;
 const imageUrl = `${baseUrl}/thumbnail.jpg`;
 
-const title = "Scaffold-Lisk App";
-const titleTemplate = "%s | Scaffold-Lisk";
-const description = "Built with 🏗 Scaffold-Lisk";
+const title = "wapSewap - DEX & NFT Marketplace";
+const titleTemplate = "%s | wapSewap";
+const description = "Decentralized Exchange & NFT Marketplace on Lisk Sepolia";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -49,9 +49,11 @@ export const metadata: Metadata = {
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <html suppressHydrationWarning>
-      <body>
+      <body className="relative">
         <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
-          <ScaffoldEthAppWithProviders>{children}</ScaffoldEthAppWithProviders>
+          <ScaffoldEthAppWithProviders>
+            <div className="relative z-10 min-h-screen flex flex-col">{children}</div>
+          </ScaffoldEthAppWithProviders>
         </ThemeProvider>
       </body>
     </html>
