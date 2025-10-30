@@ -9,11 +9,15 @@ contract WapsewapNFT is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
 
+    // Mapping from token ID to metadata IPFS hash
+    mapping(uint256 => string) private _tokenMetadata;
+
     constructor() ERC721("WapsewapNFT", "WSN") {}
 
-    function mint(address to) public onlyOwner returns (uint256) {
+    function mint(address to, string memory metadataHash) public returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
+        _tokenMetadata[tokenId] = metadataHash;
         _mint(to, tokenId);
         return tokenId;
     }
@@ -24,6 +28,6 @@ contract WapsewapNFT is ERC721, Ownable {
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         require(_ownerOf(tokenId) != address(0), "ERC721: invalid token ID");
-        return string(abi.encodePacked("https://gateway.pinata.cloud/ipfs/", tokenId));
+        return string(abi.encodePacked("https://gateway.pinata.cloud/ipfs/", _tokenMetadata[tokenId]));
     }
 }

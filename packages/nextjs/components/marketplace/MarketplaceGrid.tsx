@@ -11,6 +11,8 @@ type FilterOption = "all" | "my-nfts" | "active" | "not-listed";
 interface NFTData {
   tokenId: number;
   owner: string;
+  imageUrl?: string;
+  name?: string;
   listing?: {
     price: bigint;
     seller: string;
@@ -42,26 +44,30 @@ export const MarketplaceGrid = () => {
 
       setIsLoading(true);
       const nftData: NFTData[] = [];
-      const total = Number(totalSupply);
 
-      if (total === 0) {
-        setNfts([]);
-        setIsLoading(false);
-        return;
-      }
-
-      // Fetch each NFT's data
-      for (let i = 0; i < total; i++) {
+      // Fetch each NFT's data with metadata
+      const promises = Array.from({ length: Number(totalSupply) }, async (_, i) => {
         try {
-          // We'll fetch owner and listing info via individual reads
-          nftData.push({
+          // This will be handled by individual NFTCard components
+          return {
             tokenId: i,
             owner: "",
-          });
+            imageUrl: "", // Will be loaded by NFTCard
+            name: `NFT #${i}`,
+          };
         } catch (error) {
-          console.error(`Error fetching NFT ${i}:`, error);
+          console.error(`Error creating NFT ${i}:`, error);
+          return {
+            tokenId: i,
+            owner: "",
+            imageUrl: "",
+            name: `NFT #${i}`,
+          };
         }
-      }
+      });
+
+      const results = await Promise.all(promises);
+      nftData.push(...results);
 
       setNfts(nftData);
       setIsLoading(false);

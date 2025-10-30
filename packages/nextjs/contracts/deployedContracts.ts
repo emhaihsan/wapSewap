@@ -472,7 +472,7 @@ const deployedContracts = {
     ]
   },
   "NFTMarketplace": {
-    "address": "0x34b1eb044B4c801c8932D548D0e98cc92436201E",
+    "address": "0x74Ba0c302D09326f430Cb24ecd838b2c996e6DbC",
     "abi": [
       {
         "inputs": [
@@ -2424,7 +2424,7 @@ const deployedContracts = {
     ]
   },
   "WapsewapNFT": {
-    "address": "0xdF31D2E3c465289f09C83d9731d2125CFB16020f",
+    "address": "0x3A72a45d3Aab17eAc533636C8ED36D8adeC8B740",
     "abi": [
       {
         "inputs": [],
@@ -2611,6 +2611,11 @@ const deployedContracts = {
             "internalType": "address",
             "name": "to",
             "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataHash",
+            "type": "string"
           }
         ],
         "name": "mint",

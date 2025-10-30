@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useAccount } from "wagmi";
 import { MarketplaceGrid } from "~~/components/marketplace/MarketplaceGrid";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { notification } from "~~/utils/scaffold-eth";
 import { pinFileToIPFS, pinJSONToIPFS, validateNFTFile } from "~~/utils/pinata";
+import { notification } from "~~/utils/scaffold-eth";
 
 const PINATA_JWT = process.env.NEXT_PUBLIC_PINATA_JWT || "";
 
@@ -18,11 +18,10 @@ export default function Marketplace() {
   const [nftDescription, setNftDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  // Mint NFT function
+  // Mint NFT function - will be called with dynamic args
   const { writeAsync: mintNFT, isLoading: isMinting } = useScaffoldContractWrite({
     contractName: "WapsewapNFT",
     functionName: "mint",
-    args: [connectedAddress],
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,9 +80,11 @@ export default function Marketplace() {
 
       const metadataHash = await pinJSONToIPFS(metadata, PINATA_JWT);
 
-      // 3. Mint NFT
+      // 3. Mint NFT with metadata hash
       notification.info("Minting NFT...");
-      await mintNFT();
+      await mintNFT({
+        args: [connectedAddress, metadataHash],
+      });
 
       notification.success(`NFT minted successfully! Metadata: ipfs://${metadataHash}`);
 

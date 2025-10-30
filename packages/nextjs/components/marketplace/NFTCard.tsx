@@ -1,13 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount } from "wagmi";
-import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
-
-const WAPSEWAP_TOKEN_ADDRESS = "0xADb64775Fc297B7D3762c6CB7fA0D41099Cd2d73";
-const MARKETPLACE_ADDRESS = "0xA985351750f7D70EAcb2C0A2C5cf88951Ba9C1C3";
 
 interface NFTCardProps {
   tokenId: number;
@@ -15,12 +12,49 @@ interface NFTCardProps {
   onAction?: () => void;
 }
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
 export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
   const { address: connectedAddress, isConnected } = useAccount();
   const [showListModal, setShowListModal] = useState(false);
   const [listPrice, setListPrice] = useState("");
   const [usdPrice, setUsdPrice] = useState("0.00");
   const [wspApproved, setWspApproved] = useState(false);
+  const [nftName, setNftName] = useState(`NFT #${tokenId}`);
+  const [nftImageUrl, setNftImageUrl] = useState(imageUrl || "");
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
+
+  const { data: marketplaceInfo } = useDeployedContractInfo("NFTMarketplace");
+  const marketplaceAddress = marketplaceInfo?.address ?? ZERO_ADDRESS;
+
+  // Get tokenURI
+  const { data: tokenURI } = useScaffoldContractRead({
+    contractName: "WapsewapNFT",
+    functionName: "tokenURI",
+    args: [BigInt(tokenId)],
+  });
+
+  // Fetch metadata from tokenURI
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      if (!tokenURI) return;
+
+      try {
+        const response = await fetch(tokenURI as string);
+        if (!response.ok) throw new Error("Failed to fetch metadata");
+
+        const metadata = await response.json();
+        setNftName(metadata.name || `NFT #${tokenId}`);
+        setNftImageUrl(metadata.image || "");
+      } catch (error) {
+        console.error("Error fetching NFT metadata:", error);
+        setNftName(`NFT #${tokenId}`);
+        setNftImageUrl("");
+      }
+    };
+
+    fetchMetadata();
+  }, [tokenURI, tokenId]);
 
   // Get NFT owner
   const { data: owner } = useScaffoldContractRead({
@@ -54,7 +88,7 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
   const { data: wspAllowance, refetch: refetchWspAllowance } = useScaffoldContractRead({
     contractName: "WapsewapToken",
     functionName: "allowance",
-    args: [connectedAddress, MARKETPLACE_ADDRESS],
+    args: [connectedAddress, marketplaceAddress],
   });
 
   // Get ETH price in USD from PriceFeed
@@ -64,7 +98,7 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
   });
 
   const isOwner = owner?.toLowerCase() === connectedAddress?.toLowerCase();
-  const isApproved = approvedAddress?.toLowerCase() === MARKETPLACE_ADDRESS.toLowerCase();
+  const isApproved = marketplaceAddress ? approvedAddress?.toLowerCase() === marketplaceAddress.toLowerCase() : false;
   const isListed = listing && (listing as any)[3]; // active field
   const listingPrice = listing ? (listing as any)[2] : 0n; // price field
   const listingSeller = listing ? (listing as any)[1] : null; // seller field
@@ -93,7 +127,7 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
   const { writeAsync: approve, isLoading: isApproving } = useScaffoldContractWrite({
     contractName: "WapsewapNFT",
     functionName: "approve",
-    args: [MARKETPLACE_ADDRESS, BigInt(tokenId)],
+    args: [marketplaceAddress, BigInt(tokenId)],
   });
 
   // List item
@@ -107,7 +141,7 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
   const { writeAsync: approveWSP, isLoading: isApprovingWSP } = useScaffoldContractWrite({
     contractName: "WapsewapToken",
     functionName: "approve",
-    args: [MARKETPLACE_ADDRESS, listingPrice],
+    args: [marketplaceAddress, listingPrice],
   });
 
   // Buy item (no value needed, uses WSP)
@@ -209,8 +243,8 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
       <div className="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
         <figure className="px-4 pt-4">
           <div className="relative w-full aspect-square bg-base-300 rounded-xl overflow-hidden">
-            {imageUrl ? (
-              <img src={imageUrl} alt={`NFT #${tokenId}`} className="w-full h-full object-cover" />
+            {nftImageUrl ? (
+              <img src={nftImageUrl} alt={nftName} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-base-content/30">
                 <span className="text-4xl">#{tokenId}</span>
@@ -221,7 +255,7 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
         </figure>
 
         <div className="card-body p-4">
-          <h3 className="card-title text-lg">NFT #{tokenId}</h3>
+          <h3 className="card-title text-lg">{nftName}</h3>
 
           {isListed && (
             <div className="text-sm">
