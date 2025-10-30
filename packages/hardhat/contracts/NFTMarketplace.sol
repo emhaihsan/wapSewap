@@ -3,6 +3,7 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
@@ -10,7 +11,8 @@ contract NFTMarketplace is Ownable, IERC721Receiver {
     using SafeMath for uint256;
 
     IERC721 public nft;
-    address payable public immutable feeRecipient;
+    IERC20 public paymentToken; // WapsewapToken (WSP)
+    address public immutable feeRecipient;
 
     uint256 public constant FEE_BPS = 100; // 1% (100/10000)
     uint256 public constant BPS = 10000;
@@ -28,8 +30,9 @@ contract NFTMarketplace is Ownable, IERC721Receiver {
     event ItemSold(uint256 indexed tokenId, address indexed seller, address indexed buyer, uint256 price);
     event ItemCanceled(uint256 indexed tokenId, address indexed seller);
 
-    constructor(address _nft, address payable _feeRecipient) {
+    constructor(address _nft, address _paymentToken, address _feeRecipient) {
         nft = IERC721(_nft);
+        paymentToken = IERC20(_paymentToken);
         feeRecipient = _feeRecipient;
     }
 
@@ -46,32 +49,32 @@ contract NFTMarketplace is Ownable, IERC721Receiver {
         emit ItemListed(tokenId, msg.sender, price);
     }
 
-    function buyItem(uint256 tokenId) external payable {
+    function buyItem(uint256 tokenId) external {
         Listing memory listing = listings[tokenId];
         require(listing.active, "Not for sale");
-        require(msg.value >= listing.price, "Insufficient payment");
+        require(msg.sender != listing.seller, "Cannot buy own NFT");
 
         address seller = listing.seller;
         uint256 price = listing.price;
         uint256 fee = price.mul(FEE_BPS).div(BPS);
         uint256 sellerAmount = price.sub(fee);
 
+        // Check buyer has enough WSP tokens
+        require(paymentToken.balanceOf(msg.sender) >= price, "Insufficient WSP balance");
+        require(paymentToken.allowance(msg.sender, address(this)) >= price, "Insufficient WSP allowance");
+
         listings[tokenId].active = false;
         delete listings[tokenId];
 
+        // Transfer NFT to buyer
         nft.safeTransferFrom(seller, msg.sender, tokenId);
 
+        // Transfer WSP: fee to feeRecipient, rest to seller
         if (fee > 0) {
-            feeRecipient.transfer(fee);
+            require(paymentToken.transferFrom(msg.sender, feeRecipient, fee), "Fee transfer failed");
         }
         if (sellerAmount > 0) {
-            payable(seller).transfer(sellerAmount);
-        }
-
-        // Refund overpayment
-        uint256 refund = msg.value.sub(price);
-        if (refund > 0) {
-            payable(msg.sender).transfer(refund);
+            require(paymentToken.transferFrom(msg.sender, seller, sellerAmount), "Payment transfer failed");
         }
 
         emit ItemSold(tokenId, seller, msg.sender, price);

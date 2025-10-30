@@ -18,6 +18,10 @@ contract WapsewapNFT is ERC721, Ownable {
         return tokenId;
     }
 
+    function totalSupply() public view returns (uint256) {
+        return _tokenIdCounter.current();
+    }
+
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         require(_ownerOf(tokenId) != address(0), "ERC721: invalid token ID");
         return string(abi.encodePacked("https://gateway.pinata.cloud/ipfs/", tokenId));

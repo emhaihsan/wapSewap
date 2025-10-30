@@ -1,15 +1,14 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { YourContract } from "../typechain-types";
 
 describe("YourContract", function () {
-  // We define a fixture to reuse the same setup in every test.
+  let yourContract: any;
+  let owner: any;
 
-  let yourContract: YourContract;
-  before(async () => {
-    const [owner] = await ethers.getSigners();
-    const yourContractFactory = await ethers.getContractFactory("YourContract");
-    yourContract = (await yourContractFactory.deploy(owner.address)) as YourContract;
+  beforeEach(async function () {
+    [owner] = await ethers.getSigners();
+    const YourContractFactory = await ethers.getContractFactory("YourContract");
+    yourContract = await YourContractFactory.deploy(owner.address);
     await yourContract.waitForDeployment();
   });
 

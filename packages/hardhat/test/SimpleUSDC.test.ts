@@ -1,9 +1,8 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { SimpleUSDC } from "../typechain-types";
 
 describe("SimpleUSDC", function () {
-  let usdc: SimpleUSDC;
+  let usdc: any;
   let owner: any, user1: any;
 
   beforeEach(async function () {
