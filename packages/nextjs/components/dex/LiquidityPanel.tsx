@@ -4,17 +4,16 @@ import { useEffect, useState } from "react";
 import { formatEther, formatUnits, parseEther, parseUnits } from "viem";
 import { useAccount } from "wagmi";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { notification } from "~~/utils/scaffold-eth";
-
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { notification } from "~~/utils/scaffold-eth";
 
 export const LiquidityPanel = () => {
   const { address: connectedAddress, isConnected } = useAccount();
-  const [wapsAmount, setWapsAmount] = useState("");
-  const [usdcAmount, setUsdcAmount] = useState("");
+  const [wspAmount, setWspAmount] = useState("");
+  const [susdcAmount, setSusdcAmount] = useState("");
   const [lpAmount, setLpAmount] = useState("");
   const [isAddMode, setIsAddMode] = useState(true);
-  const [lastManualInput, setLastManualInput] = useState<"waps" | "usdc" | null>(null);
+  const [lastManualInput, setLastManualInput] = useState<"wsp" | "susdc" | null>(null);
 
   // Get deployed contract address
   const { data: dexContract } = useDeployedContractInfo("SimpleDEX");
@@ -44,6 +43,7 @@ export const LiquidityPanel = () => {
     contractName: "WapsewapToken",
     functionName: "allowance",
     args: [connectedAddress, DEX_ADDRESS],
+    enabled: !!DEX_ADDRESS && !!connectedAddress,
   });
 
   // Get USDC allowance
@@ -51,6 +51,7 @@ export const LiquidityPanel = () => {
     contractName: "SimpleUSDC",
     functionName: "allowance",
     args: [connectedAddress, DEX_ADDRESS],
+    enabled: !!DEX_ADDRESS && !!connectedAddress,
   });
 
   // Approve WAPS
@@ -71,7 +72,7 @@ export const LiquidityPanel = () => {
   const { writeAsync: addLiquidity, isLoading: isAddingLiquidity } = useScaffoldContractWrite({
     contractName: "SimpleDEX",
     functionName: "addLiquidity",
-    args: [wapsAmount ? parseEther(wapsAmount) : 0n, usdcAmount ? parseUnits(usdcAmount, 6) : 0n],
+    args: [wspAmount ? parseEther(wspAmount) : 0n, susdcAmount ? parseUnits(susdcAmount, 6) : 0n],
   });
 
   // Remove liquidity
@@ -83,13 +84,13 @@ export const LiquidityPanel = () => {
 
   const lpBalanceFloat = lpBalance ? Number(formatEther(lpBalance)) : 0;
   const totalLiquidityFloat = totalSupply ? Number(formatEther(totalSupply)) : 0;
-  const wapsReserveFloat = reserves ? Number(formatEther((reserves as [bigint, bigint])[0])) : 0;
-  const usdcReserveFloat = reserves ? Number(formatUnits((reserves as [bigint, bigint])[1], 6)) : 0;
+  const wspReserveFloat = reserves ? Number(formatEther((reserves as [bigint, bigint])[0])) : 0;
+  const susdcReserveFloat = reserves ? Number(formatUnits((reserves as [bigint, bigint])[1], 6)) : 0;
   const poolRatio =
-    wapsReserveFloat > 0 && usdcReserveFloat > 0
+    wspReserveFloat > 0 && susdcReserveFloat > 0
       ? {
-          wapsPerUsdc: (wapsReserveFloat / usdcReserveFloat).toFixed(2),
-          usdcPerWaps: (usdcReserveFloat / wapsReserveFloat).toFixed(2),
+          wspPerSusdc: (wspReserveFloat / susdcReserveFloat).toFixed(2),
+          susdcPerWsp: (susdcReserveFloat / wspReserveFloat).toFixed(2),
         }
       : null;
 
@@ -102,72 +103,72 @@ export const LiquidityPanel = () => {
 
   useEffect(() => {
     if (!isAddMode || !poolRatio || !reserves) return;
-    if (lastManualInput === "waps") {
-      if (!wapsAmount) {
-        setUsdcAmount("");
+    if (lastManualInput === "wsp") {
+      if (!wspAmount) {
+        setSusdcAmount("");
         setLastManualInput(null);
         return;
       }
-      const ratio = usdcReserveFloat / wapsReserveFloat;
+      const ratio = susdcReserveFloat / wspReserveFloat;
       if (!Number.isFinite(ratio) || ratio === 0) {
         setLastManualInput(null);
         return;
       }
-      const parsed = Number(wapsAmount);
+      const parsed = Number(wspAmount);
       if (Number.isNaN(parsed)) {
         setLastManualInput(null);
         return;
       }
       const computed = parsed * ratio;
       const formatted = computed.toFixed(6);
-      if (formatted !== usdcAmount) {
-        setUsdcAmount(formatted);
+      if (formatted !== susdcAmount) {
+        setSusdcAmount(formatted);
       }
       setLastManualInput(null);
-    } else if (lastManualInput === "usdc") {
-      if (!usdcAmount) {
-        setWapsAmount("");
+    } else if (lastManualInput === "susdc") {
+      if (!susdcAmount) {
+        setWspAmount("");
         setLastManualInput(null);
         return;
       }
-      const ratio = wapsReserveFloat / usdcReserveFloat;
+      const ratio = wspReserveFloat / susdcReserveFloat;
       if (!Number.isFinite(ratio) || ratio === 0) {
         setLastManualInput(null);
         return;
       }
-      const parsed = Number(usdcAmount);
+      const parsed = Number(susdcAmount);
       if (Number.isNaN(parsed)) {
         setLastManualInput(null);
         return;
       }
       const computed = parsed * ratio;
       const formatted = computed.toFixed(6);
-      if (formatted !== wapsAmount) {
-        setWapsAmount(formatted);
+      if (formatted !== wspAmount) {
+        setWspAmount(formatted);
       }
       setLastManualInput(null);
     }
-  }, [isAddMode, poolRatio, lastManualInput, wapsAmount, usdcAmount, wapsReserveFloat, usdcReserveFloat]);
+  }, [isAddMode, poolRatio, lastManualInput, wspAmount, susdcAmount, wspReserveFloat, susdcReserveFloat]);
 
   const handleAddLiquidity = async () => {
-    if (!wapsAmount || !usdcAmount || !connectedAddress) return;
+    if (!wspAmount || !susdcAmount || !connectedAddress) return;
 
     try {
-      const wapsValue = parseEther(wapsAmount);
-      const usdcValue = parseUnits(usdcAmount, 6);
+      const wspValue = parseEther(wspAmount);
+      const susdcValue = parseUnits(susdcAmount, 6);
 
-      // Check and approve WAPS if needed
-      if (!wapsAllowance || wapsAllowance < wapsValue) {
-        notification.info("Approving WAPS...");
+      // Check and approve WSP if needed
+      if (!wapsAllowance || wapsAllowance < wspValue) {
+        notification.info("Approving WSP...");
         await approveWaps();
-        notification.success("WAPS approved!");
+        notification.success("WSP approved!");
       }
 
-      // Check and approve USDC if needed
-      if (!usdcAllowance || usdcAllowance < usdcValue) {
-        notification.info("Approving USDC...");
+      // Check and approve sUSDC if needed
+      if (!usdcAllowance || usdcAllowance < susdcValue) {
+        notification.info("Approving sUSDC...");
         await approveUsdc();
-        notification.success("USDC approved!");
+        notification.success("sUSDC approved!");
       }
 
       // Add liquidity
@@ -176,8 +177,8 @@ export const LiquidityPanel = () => {
       notification.success("Liquidity added successfully!");
 
       // Reset form
-      setWapsAmount("");
-      setUsdcAmount("");
+      setWspAmount("");
+      setSusdcAmount("");
     } catch (error: any) {
       console.error("Add liquidity error:", error);
       notification.error(error?.message || "Failed to add liquidity");
@@ -220,41 +221,51 @@ export const LiquidityPanel = () => {
             {/* Add Liquidity Form */}
             <div className="form-control">
               <label className="label">
-                <span className="label-text">WAPS Amount</span>
+                <span className="label-text">WSP Amount</span>
               </label>
               <input
                 type="number"
                 placeholder="0.0"
                 className="input input-bordered w-full"
-                value={wapsAmount}
+                value={wspAmount}
                 onChange={e => {
-                  setWapsAmount(e.target.value);
-                  setLastManualInput("waps");
+                  const value = e.target.value;
+                  if (value === "" || (parseFloat(value) >= 0 && !isNaN(parseFloat(value)))) {
+                    setWspAmount(value);
+                    setLastManualInput("wsp");
+                  }
                 }}
+                min="0"
+                step="any"
                 disabled={!isConnected}
               />
             </div>
 
             <div className="form-control mt-4">
               <label className="label">
-                <span className="label-text">USDC Amount</span>
+                <span className="label-text">sUSDC Amount</span>
               </label>
               <input
                 type="number"
                 placeholder="0.0"
                 className="input input-bordered w-full"
-                value={usdcAmount}
+                value={susdcAmount}
                 onChange={e => {
-                  setUsdcAmount(e.target.value);
-                  setLastManualInput("usdc");
+                  const value = e.target.value;
+                  if (value === "" || (parseFloat(value) >= 0 && !isNaN(parseFloat(value)))) {
+                    setSusdcAmount(value);
+                    setLastManualInput("susdc");
+                  }
                 }}
+                min="0"
+                step="any"
                 disabled={!isConnected}
               />
               {poolRatio && (
                 <p className="mt-2 text-xs text-base-content/60">
-                  Pool keeps a constant ratio: <span className="font-semibold">{poolRatio.wapsPerUsdc} WAPS</span> :
-                  <span className="font-semibold"> 1 USDC</span>. Setoran baru akan otomatis dipotong agar mengikuti
-                  rasio ini.
+                  Pool maintains constant ratio: <span className="font-semibold">{poolRatio.wspPerSusdc} WSP</span> :
+                  <span className="font-semibold"> 1 sUSDC</span>. New deposits will be automatically adjusted to follow
+                  this ratio.
                 </p>
               )}
             </div>
@@ -270,7 +281,7 @@ export const LiquidityPanel = () => {
                 <button
                   onClick={handleAddLiquidity}
                   className="btn btn-primary w-full bg-dayak-green-600 hover:bg-dayak-green-700 border-none"
-                  disabled={!wapsAmount || !usdcAmount || isApprovingWaps || isApprovingUsdc || isAddingLiquidity}
+                  disabled={!wspAmount || !susdcAmount || isApprovingWaps || isApprovingUsdc || isAddingLiquidity}
                 >
                   {isApprovingWaps || isApprovingUsdc
                     ? "Approving..."
@@ -294,7 +305,14 @@ export const LiquidityPanel = () => {
                 placeholder="0.0"
                 className="input input-bordered w-full"
                 value={lpAmount}
-                onChange={e => setLpAmount(e.target.value)}
+                onChange={e => {
+                  const value = e.target.value;
+                  if (value === "" || (parseFloat(value) >= 0 && !isNaN(parseFloat(value)))) {
+                    setLpAmount(value);
+                  }
+                }}
+                min="0"
+                step="any"
                 disabled={!isConnected}
               />
             </div>
@@ -340,7 +358,7 @@ export const LiquidityPanel = () => {
           <div className="text-xs text-base-content/60 mt-2">
             <p>Pool Reserves:</p>
             <p className="mt-1">
-              WAPS: {formatEther((reserves as [bigint, bigint])[0])} | USDC:{" "}
+              WSP: {formatEther((reserves as [bigint, bigint])[0])} | sUSDC:{" "}
               {formatUnits((reserves as [bigint, bigint])[1], 6)}
             </p>
           </div>

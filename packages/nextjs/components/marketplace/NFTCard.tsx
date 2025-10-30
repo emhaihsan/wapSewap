@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatEther, parseEther } from "viem";
+import { formatEther, formatUnits, parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { useDeployedContractInfo, useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
@@ -91,10 +91,10 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
     args: [connectedAddress, marketplaceAddress],
   });
 
-  // Get ETH price in USD from PriceFeed
-  const { data: ethPriceData } = useScaffoldContractRead({
-    contractName: "PriceFeed",
-    functionName: "getEthPrice",
+  // Get DEX reserves to calculate WSP/sUSDC rate
+  const { data: reserves } = useScaffoldContractRead({
+    contractName: "SimpleDEX",
+    functionName: "getReserves",
   });
 
   const isOwner = owner?.toLowerCase() === connectedAddress?.toLowerCase();
@@ -105,22 +105,30 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
   const hasEnoughWSP = wspBalance ? wspBalance >= listingPrice : false;
   const wspAllowanceEnough = wspAllowance ? wspAllowance >= listingPrice : false;
 
-  // Calculate USD price
-  const calculateUsdPrice = (ethAmount: string) => {
-    if (!ethAmount || !ethPriceData) return "0.00";
+  // Calculate sUSDC equivalent price using DEX rate
+  const calculateSusdcPrice = (wspAmount: string) => {
+    if (!wspAmount || !reserves) return "0.00";
     try {
-      const ethValue = parseFloat(ethAmount);
-      const ethPrice = Number(formatEther(ethPriceData as bigint));
-      return (ethValue * ethPrice).toFixed(2);
+      const wspValue = parseFloat(wspAmount);
+      const [wspReserve, susdcReserve] = reserves as [bigint, bigint];
+      
+      if (wspReserve === 0n || susdcReserve === 0n) return "0.00";
+      
+      // Calculate WSP to sUSDC rate: sUSDC_reserve / WSP_reserve
+      const wspReserveFloat = Number(formatEther(wspReserve));
+      const susdcReserveFloat = Number(formatUnits(susdcReserve, 6));
+      const rate = susdcReserveFloat / wspReserveFloat;
+      
+      return (wspValue * rate).toFixed(2);
     } catch {
       return "0.00";
     }
   };
 
-  // Update USD price when ETH price changes
+  // Update sUSDC price when WSP price changes
   const handlePriceChange = (value: string) => {
     setListPrice(value);
-    setUsdPrice(calculateUsdPrice(value));
+    setUsdPrice(calculateSusdcPrice(value));
   };
 
   // Approve marketplace
@@ -260,7 +268,7 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
           {isListed && (
             <div className="text-sm">
               <div className="font-semibold text-dayak-green-400">{formatEther(listingPrice)} WSP</div>
-              <div className="text-xs text-base-content/60">≈ ${calculateUsdPrice(formatEther(listingPrice))} USD</div>
+              <div className="text-xs text-base-content/60">≈ {calculateSusdcPrice(formatEther(listingPrice))} sUSDC</div>
             </div>
           )}
 
@@ -347,7 +355,7 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Price (WSP)</span>
-                <span className="label-text-alt text-dayak-green-400">≈ ${usdPrice} USD</span>
+                <span className="label-text-alt text-dayak-green-400">≈ {usdPrice} sUSDC</span>
               </label>
               <input
                 type="number"

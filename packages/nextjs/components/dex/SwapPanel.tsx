@@ -32,6 +32,7 @@ export const SwapPanel = () => {
     contractName: isToken0ToToken1 ? "WapsewapToken" : "SimpleUSDC",
     functionName: "allowance",
     args: [connectedAddress, DEX_ADDRESS],
+    enabled: !!DEX_ADDRESS && !!connectedAddress,
   });
 
   // Approve token
@@ -123,14 +124,22 @@ export const SwapPanel = () => {
         <div className="form-control">
           <label className="label">
             <span className="label-text">From</span>
-            <span className="label-text-alt">{isToken0ToToken1 ? "WAPS" : "USDC"}</span>
+            <span className="label-text-alt">{isToken0ToToken1 ? "WSP" : "sUSDC"}</span>
           </label>
           <input
             type="number"
             placeholder="0.0"
             className="input input-bordered w-full"
             value={inputAmount}
-            onChange={e => setInputAmount(e.target.value)}
+            onChange={e => {
+              const value = e.target.value;
+              // Prevent negative values
+              if (value === "" || (parseFloat(value) >= 0 && !isNaN(parseFloat(value)))) {
+                setInputAmount(value);
+              }
+            }}
+            min="0"
+            step="any"
             disabled={!isConnected}
           />
         </div>
@@ -150,7 +159,7 @@ export const SwapPanel = () => {
         <div className="form-control">
           <label className="label">
             <span className="label-text">To (estimated)</span>
-            <span className="label-text-alt">{isToken0ToToken1 ? "USDC" : "WAPS"}</span>
+            <span className="label-text-alt">{isToken0ToToken1 ? "sUSDC" : "WSP"}</span>
           </label>
           <input type="text" placeholder="0.0" className="input input-bordered w-full" value={outputAmount} disabled />
         </div>
@@ -184,7 +193,7 @@ export const SwapPanel = () => {
         {reserves && (
           <div className="text-xs text-base-content/60 mt-2">
             <p>
-              Rate: 1 {isToken0ToToken1 ? "WAPS" : "USDC"} ≈{" "}
+              Rate: 1 {isToken0ToToken1 ? "WSP" : "sUSDC"} ≈{" "}
               {isToken0ToToken1
                 ? (
                     Number(formatUnits((reserves as [bigint, bigint])[1], 6)) /
@@ -194,7 +203,7 @@ export const SwapPanel = () => {
                     Number(formatEther((reserves as [bigint, bigint])[0])) /
                     Number(formatUnits((reserves as [bigint, bigint])[1], 6))
                   ).toFixed(6)}{" "}
-              {isToken0ToToken1 ? "USDC" : "WAPS"}
+              {isToken0ToToken1 ? "sUSDC" : "WSP"}
             </p>
             <p className="mt-1">Fee: 0.3%</p>
           </div>
