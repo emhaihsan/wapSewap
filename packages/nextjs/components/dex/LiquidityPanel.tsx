@@ -6,9 +6,7 @@ import { useAccount } from "wagmi";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 
-// const WAPS_ADDRESS = "0xADb64775Fc297B7D3762c6CB7fA0D41099Cd2d73";
-// const USDC_ADDRESS = "0x17f5c0cEc8c989566ED3b0f6177CcC69c4429C54";
-const DEX_ADDRESS = "0x0d449bF44aa7E077AA583a4fCCF9Fd32C0A510F9";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
 export const LiquidityPanel = () => {
   const { address: connectedAddress, isConnected } = useAccount();
@@ -17,6 +15,10 @@ export const LiquidityPanel = () => {
   const [lpAmount, setLpAmount] = useState("");
   const [isAddMode, setIsAddMode] = useState(true);
   const [lastManualInput, setLastManualInput] = useState<"waps" | "usdc" | null>(null);
+
+  // Get deployed contract address
+  const { data: dexContract } = useDeployedContractInfo("SimpleDEX");
+  const DEX_ADDRESS = dexContract?.address;
 
   // Get reserves
   const { data: reserves } = useScaffoldContractRead({

@@ -12,6 +12,7 @@ const deployPriceFeed: DeployFunction = async function (hre: HardhatRuntimeEnvir
     args: [],
     log: true,
     autoMine: true,
+    waitConfirmations: 2,
   });
 
   console.log("✅ PriceFeed deployed:");

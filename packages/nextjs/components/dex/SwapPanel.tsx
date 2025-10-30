@@ -3,18 +3,23 @@
 import { useEffect, useState } from "react";
 import { formatEther, formatUnits, parseEther, parseUnits } from "viem";
 import { useAccount } from "wagmi";
-import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useScaffoldContractRead, useScaffoldContractWrite, useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
-
-const WAPS_ADDRESS = "0xADb64775Fc297B7D3762c6CB7fA0D41099Cd2d73";
-const USDC_ADDRESS = "0x17f5c0cEc8c989566ED3b0f6177CcC69c4429C54";
-const DEX_ADDRESS = "0x0d449bF44aa7E077AA583a4fCCF9Fd32C0A510F9";
 
 export const SwapPanel = () => {
   const { address: connectedAddress, isConnected } = useAccount();
   const [inputAmount, setInputAmount] = useState("");
   const [outputAmount, setOutputAmount] = useState("");
   const [isToken0ToToken1, setIsToken0ToToken1] = useState(true); // WAPS -> USDC
+
+  // Get deployed contract addresses
+  const { data: dexContract } = useDeployedContractInfo("SimpleDEX");
+  const { data: wapsContract } = useDeployedContractInfo("WapsewapToken");
+  const { data: usdcContract } = useDeployedContractInfo("SimpleUSDC");
+  
+  const DEX_ADDRESS = dexContract?.address;
+  const WAPS_ADDRESS = wapsContract?.address;
+  const USDC_ADDRESS = usdcContract?.address;
 
   // Get reserves
   const { data: reserves } = useScaffoldContractRead({

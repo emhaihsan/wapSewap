@@ -3,6 +3,7 @@
 import { SwapPanel } from "~~/components/dex/SwapPanel";
 import { LiquidityPanel } from "~~/components/dex/LiquidityPanel";
 import { PoolStats } from "~~/components/dex/PoolStats";
+import { TokenFaucet } from "~~/components/dex/TokenFaucet";
 
 export default function DEX() {
   return (
@@ -12,6 +13,11 @@ export default function DEX() {
           <div className="container mx-auto max-w-7xl">
             <h1 className="text-4xl font-bold mb-4 text-dayak-green-400">DEX</h1>
             <p className="text-base-content/70 mb-12">Swap tokens and provide liquidity on wapSewap DEX.</p>
+
+            {/* Token Faucet - Full width at top */}
+            <div className="mb-8">
+              <TokenFaucet />
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Swap Panel */}

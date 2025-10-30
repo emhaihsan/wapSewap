@@ -13,6 +13,7 @@ const deployTokens: DeployFunction = async function (hre: HardhatRuntimeEnvironm
     args: [],
     log: true,
     autoMine: true,
+    waitConfirmations: 2,
   });
 
   // Deploy SimpleUSDC
@@ -21,6 +22,7 @@ const deployTokens: DeployFunction = async function (hre: HardhatRuntimeEnvironm
     args: [],
     log: true,
     autoMine: true,
+    waitConfirmations: 2,
   });
 
   // Deploy WapsewapNFT
@@ -29,6 +31,7 @@ const deployTokens: DeployFunction = async function (hre: HardhatRuntimeEnvironm
     args: [],
     log: true,
     autoMine: true,
+    waitConfirmations: 2,
   });
 
   console.log("✅ Tokens deployed:");
