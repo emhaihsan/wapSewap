@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { RainbowKitCustomConnectButton } from "./scaffold-eth";
@@ -21,8 +22,8 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-dayak-green-500 to-dayak-green-700 flex items-center justify-center shadow-lg group-hover:shadow-dayak-green-500/50 transition-all duration-300">
-              <span className="text-white font-bold text-lg">W</span>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300">
+              <Image src="/logo.png" alt="wapSewap Logo" width={40} height={40} className="object-contain" />
             </div>
             <span className="hidden sm:inline text-xl font-bold bg-gradient-to-r from-dayak-green-400 to-dayak-green-600 bg-clip-text text-transparent">
               wapSewap

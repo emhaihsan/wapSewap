@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
@@ -35,16 +36,15 @@ export default function Home() {
             <div className="text-center lg:text-left">
               <div className="mb-6">
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4 leading-tight">
-                  Your{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-dayak-green-400 to-dayak-green-600">
-                    DeFi
-                  </span>{" "}
-                  journey
+                    Swap
+                  </span>
+                  , Mint,
                   <br />
-                  starts here
+                  and Trade
                 </h1>
                 <p className="text-xl text-base-content/70 max-w-xl mx-auto lg:mx-0">
-                  Experience seamless token swaps and NFT trading on Lisk Sepolia testnet
+                  Simple DeFi platform for token swaps, NFT minting, and trading on Lisk Sepolia testnet
                 </p>
               </div>
 
@@ -60,13 +60,8 @@ export default function Home() {
               {/* Partner Logos */}
               <div className="flex items-center justify-center lg:justify-start gap-8 opacity-60">
                 <div className="text-sm font-medium">Built on</div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-dayak-green-500 rounded-full"></div>
-                  <span className="font-semibold">Lisk</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-blue-500 rounded"></div>
-                  <span className="font-semibold">Scaffold-ETH</span>
+                <div className="flex items-center ">
+                  <Image src="/liskwhite.png" alt="Lisk" width={144} height={144} className="object-contain" />
                 </div>
               </div>
             </div>
@@ -135,14 +130,13 @@ export default function Home() {
 
               {/* Floating NFT Card */}
               <div className="absolute -top-4 -right-4 bg-base-200/90 backdrop-blur-xl rounded-2xl p-4 border border-dayak-green-600/20 shadow-xl w-48 animate-float overflow-hidden">
-                <div className="w-full h-32 bg-gradient-to-br from-dayak-green-400 via-dayak-green-500 to-dayak-green-600 rounded-xl mb-3 flex items-center justify-center text-white text-6xl relative overflow-hidden group">
+                <div className="w-full h-32 bg-gradient-to-br from-dayak-green-400 via-dayak-green-500 to-dayak-green-600 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden group">
                   {/* Animated gradient background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-dayak-green-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* NFT Placeholder with Icon */}
-                  <div className="relative z-10 flex flex-col items-center justify-center">
-                    <span className="text-5xl mb-1 animate-bounce" style={{ animationDuration: '2s' }}>🎨</span>
-                    <span className="text-xs text-white/80 font-semibold">NFT</span>
+
+                  {/* NFT Image */}
+                  <div className="relative z-10 w-full h-full">
+                    <Image src="/bekantanhero.png" alt="Bekantan NFT" fill className="object-cover rounded-xl" />
                   </div>
                 </div>
                 <div className="text-sm font-semibold mb-1">Bekantan NFT</div>
@@ -167,60 +161,46 @@ export default function Home() {
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">DeFi shouldn't feel complicated</h2>
-            <p className="text-xl text-base-content/70">Simple, secure, and powerful tools for everyone</p>
+            <h2 className="text-4xl font-bold mb-4">Simple Features for DeFi</h2>
+            <p className="text-xl text-base-content/70">Swap, mint, and trade in one platform</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: "💱",
-                title: "Instant Swaps",
-                desc: "Trade WSP and sUSDC instantly with 0.3% fees. No registration required.",
-                highlight: "0.3% fees",
+                image: "/dex.png",
+                title: "Mini DEX",
+                desc: "Instantly swap WSP and sUSDC tokens with 0.3% fee. No registration required.",
+                highlight: "0.3% fee",
               },
-
               {
-                icon: "🎨",
+                image: "/nft.png",
                 title: "NFT Marketplace",
-                desc: "Mint, buy, and sell unique NFTs. Built-in IPFS storage for metadata.",
+                desc: "Mint, buy, and sell unique NFTs. Metadata storage integrated with IPFS.",
                 highlight: "1% marketplace fee",
               },
+              {
+                image: "/faucet.png",
+                title: "Faucet",
+                desc: "Get free testnet tokens to try all features of our platform.",
+                highlight: "Free testnet tokens",
+              },
             ].map((feature, index) => (
-              <div key={index} className="group">
+              <a key={index} className="group block">
                 <div className="bg-base-200/50 backdrop-blur-sm rounded-3xl p-8 border border-dayak-green-600/10 hover:border-dayak-green-600/30 transition-all duration-300 hover:scale-105 h-full">
-                  <div className="text-5xl mb-6 group-hover:animate-bounce">{feature.icon}</div>
-                  <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
-                  <p className="text-base-content/70 mb-4">{feature.desc}</p>
-                  <div className="inline-block bg-dayak-green-600/20 text-dayak-green-400 px-3 py-1 rounded-full text-sm font-medium">
-                    {feature.highlight}
+                  <div className="mb-6 relative w-32 h-32 mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <Image src={feature.image} alt={feature.title} fill className="object-contain" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-4 text-center">{feature.title}</h3>
+                  <p className="text-base-content/70 mb-4 text-center">{feature.desc}</p>
+                  <div className="flex justify-center">
+                    <div className="inline-block bg-dayak-green-600/20 text-dayak-green-400 px-3 py-1 rounded-full text-sm font-medium">
+                      {feature.highlight}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-dayak-green-950/20 to-dayak-green-900/10">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to start your DeFi journey?</h2>
-          <p className="text-xl text-base-content/70 mb-8">Join thousands of users already trading on wapSewap</p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/dex"
-              className="btn btn-lg bg-dayak-green-600 hover:bg-dayak-green-700 border-none text-white px-8 rounded-2xl"
-            >
-              Start Trading
-            </a>
-            <a
-              href="/marketplace"
-              className="btn btn-lg btn-outline border-dayak-green-600 text-dayak-green-400 hover:bg-dayak-green-600 hover:text-white px-8 rounded-2xl"
-            >
-              Explore NFTs
-            </a>
           </div>
         </div>
       </section>

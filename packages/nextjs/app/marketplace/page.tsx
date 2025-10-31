@@ -116,7 +116,7 @@ export default function Marketplace() {
             <div className="text-center mb-8">
               <h1 className="text-5xl font-bold mb-4">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-dayak-green-400 to-dayak-green-600">
-                  NFT Marketplace
+                  NFT Gallery
                 </span>
               </h1>
               <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-6">
@@ -130,31 +130,94 @@ export default function Marketplace() {
                   onClick={() => setShowMintModal(true)}
                 >
                   <span className="text-xl mr-2">🎨</span>
-                  Mint Your NFT
+                  Create and Mint NFT
                 </button>
               ) : (
                 <div className="text-base-content/60">Connect wallet to mint NFTs</div>
               )}
             </div>
 
-            {/* Stats Bar */}
-            <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-12">
-              <div className="bg-base-200/50 backdrop-blur-sm rounded-2xl p-4 text-center border border-dayak-green-600/10">
-                <div className="text-2xl font-bold text-dayak-green-400">1%</div>
-                <div className="text-xs text-base-content/60">Platform Fee</div>
-              </div>
-              <div className="bg-base-200/50 backdrop-blur-sm rounded-2xl p-4 text-center border border-dayak-green-600/10">
-                <div className="text-2xl font-bold text-dayak-green-400">WSP</div>
-                <div className="text-xs text-base-content/60">Payment Token</div>
-              </div>
-              <div className="bg-base-200/50 backdrop-blur-sm rounded-2xl p-4 text-center border border-dayak-green-600/10">
-                <div className="text-2xl font-bold text-dayak-green-400">IPFS</div>
-                <div className="text-xs text-base-content/60">Decentralized Storage</div>
-              </div>
-            </div>
-
             {/* Marketplace Grid */}
             <MarketplaceGrid />
+            {/* How to Use Guide */}
+            <div className="max-w-4xl mx-auto my-12">
+              <div className="bg-base-200/50 backdrop-blur-sm rounded-3xl p-8 border border-dayak-green-600/20">
+                <h3 className="text-2xl font-bold mb-6 text-center text-dayak-green-400">How to Use NFT Marketplace</h3>
+
+                <div className="space-y-6">
+                  {/* Step 1: Mint */}
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-dayak-green-600 flex items-center justify-center text-white font-bold">
+                        1
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-lg mb-2">Mint Your NFT</h4>
+                      <p className="text-sm text-base-content/70 mb-2">
+                        Click <strong>"Mint Your NFT"</strong> button, upload your image (PNG/JPEG, max 2MB), add name
+                        and description. Your artwork will be stored on IPFS and minted as an NFT.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 2: List */}
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-dayak-green-600 flex items-center justify-center text-white font-bold">
+                        2
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-lg mb-2">List for Sale</h4>
+                      <p className="text-sm text-base-content/70 mb-2">
+                        After minting, find your NFT in the marketplace grid. Click <strong>"List for Sale"</strong>,
+                        set your price in WSP tokens, and confirm the transaction.
+                      </p>
+                      <div className="text-xs text-base-content/60 italic">💡 Platform fee: 1% of sale price</div>
+                    </div>
+                  </div>
+
+                  {/* Step 3: Buy */}
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-dayak-green-600 flex items-center justify-center text-white font-bold">
+                        3
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-lg mb-2">Buy NFTs</h4>
+                      <p className="text-sm text-base-content/70 mb-2">
+                        Browse listed NFTs below. Click <strong>"Buy Now"</strong> on any NFT you like. Make sure you
+                        have enough WSP tokens in your wallet to complete the purchase.
+                      </p>
+                      <div className="text-xs text-base-content/60 italic">
+                        💡 Get WSP tokens from the DEX or Faucet page
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 4: Manage */}
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-dayak-green-600 flex items-center justify-center text-white font-bold">
+                        4
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-lg mb-2">Manage Your NFTs</h4>
+                      <p className="text-sm text-base-content/70 mb-2">
+                        You can <strong>cancel listing</strong> anytime if you change your mind. Your NFTs are always in
+                        your wallet and you have full control over them.
+                      </p>
+                      <div className="text-xs text-base-content/60 italic">
+                        💡 All transactions are on-chain and transparent
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
