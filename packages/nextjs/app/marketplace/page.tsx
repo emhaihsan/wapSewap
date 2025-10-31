@@ -104,25 +104,53 @@ export default function Marketplace() {
 
   return (
     <>
-      <main className="flex-1">
-        <section className="py-16 px-4">
-          <div className="container mx-auto max-w-7xl">
+      <main className="flex-1 bg-gradient-to-b from-base-100 via-base-200/30 to-base-100">
+        {/* Hero Section */}
+        <section className="relative py-12 px-4 overflow-hidden">
+          {/* Background Effects */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(34,197,94,0.1),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(34,197,94,0.08),transparent_50%)]" />
+
+          <div className="container mx-auto max-w-7xl relative z-10">
             {/* Header */}
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h1 className="text-4xl font-bold mb-2 text-dayak-green-400">NFT Marketplace</h1>
-                <p className="text-base-content/70">
-                  Browse, list, and trade unique NFTs on wapSewap. 1% fee goes to platform sustainability.
-                </p>
-              </div>
-              {isConnected && (
+            <div className="text-center mb-8">
+              <h1 className="text-5xl font-bold mb-4">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-dayak-green-400 to-dayak-green-600">
+                  NFT Marketplace
+                </span>
+              </h1>
+              <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-6">
+                Discover, collect, and trade unique digital assets
+              </p>
+
+              {/* CTA Button */}
+              {isConnected ? (
                 <button
-                  className="btn btn-primary bg-dayak-green-600 hover:bg-dayak-green-700 border-none"
+                  className="btn btn-lg bg-dayak-green-600 hover:bg-dayak-green-700 border-none text-white px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                   onClick={() => setShowMintModal(true)}
                 >
-                  + Mint NFT
+                  <span className="text-xl mr-2">🎨</span>
+                  Mint Your NFT
                 </button>
+              ) : (
+                <div className="text-base-content/60">Connect wallet to mint NFTs</div>
               )}
+            </div>
+
+            {/* Stats Bar */}
+            <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-12">
+              <div className="bg-base-200/50 backdrop-blur-sm rounded-2xl p-4 text-center border border-dayak-green-600/10">
+                <div className="text-2xl font-bold text-dayak-green-400">1%</div>
+                <div className="text-xs text-base-content/60">Platform Fee</div>
+              </div>
+              <div className="bg-base-200/50 backdrop-blur-sm rounded-2xl p-4 text-center border border-dayak-green-600/10">
+                <div className="text-2xl font-bold text-dayak-green-400">WSP</div>
+                <div className="text-xs text-base-content/60">Payment Token</div>
+              </div>
+              <div className="bg-base-200/50 backdrop-blur-sm rounded-2xl p-4 text-center border border-dayak-green-600/10">
+                <div className="text-2xl font-bold text-dayak-green-400">IPFS</div>
+                <div className="text-xs text-base-content/60">Decentralized Storage</div>
+              </div>
             </div>
 
             {/* Marketplace Grid */}
@@ -134,8 +162,11 @@ export default function Marketplace() {
       {/* Mint Modal */}
       {showMintModal && (
         <div className="modal modal-open">
-          <div className="modal-box max-w-2xl">
-            <h3 className="font-bold text-lg mb-4">Mint New NFT</h3>
+          <div className="modal-box max-w-2xl bg-base-200/95 backdrop-blur-xl border border-dayak-green-600/20">
+            <h3 className="font-bold text-2xl mb-2 text-transparent bg-clip-text bg-gradient-to-r from-dayak-green-400 to-dayak-green-600">
+              Mint New NFT
+            </h3>
+            <p className="text-sm text-base-content/60 mb-6">Upload your artwork and create a unique digital asset</p>
 
             <div className="space-y-4">
               {/* File Upload */}
@@ -155,7 +186,7 @@ export default function Marketplace() {
               {/* Preview */}
               {previewUrl && (
                 <div className="flex justify-center">
-                  <div className="w-48 h-48 rounded-lg overflow-hidden border-2 border-dayak-green-600">
+                  <div className="w-64 h-64 rounded-2xl overflow-hidden border-2 border-dayak-green-600 shadow-lg shadow-dayak-green-600/20">
                     <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 </div>
@@ -211,7 +242,7 @@ export default function Marketplace() {
 
             <div className="modal-action">
               <button
-                className="btn btn-ghost"
+                className="btn btn-ghost rounded-2xl"
                 onClick={() => {
                   setShowMintModal(false);
                   setSelectedFile(null);
@@ -224,11 +255,26 @@ export default function Marketplace() {
                 Cancel
               </button>
               <button
-                className="btn btn-primary bg-dayak-green-600 hover:bg-dayak-green-700 border-none"
+                className="btn bg-dayak-green-600 hover:bg-dayak-green-700 border-none text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={handleMint}
                 disabled={!selectedFile || !nftName || isUploading || isMinting || !PINATA_JWT}
               >
-                {isUploading ? "Uploading..." : isMinting ? "Minting..." : "Mint NFT"}
+                {isUploading ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Uploading...
+                  </>
+                ) : isMinting ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Minting...
+                  </>
+                ) : (
+                  <>
+                    <span className="text-lg mr-2">✨</span>
+                    Mint NFT
+                  </>
+                )}
               </button>
             </div>
           </div>

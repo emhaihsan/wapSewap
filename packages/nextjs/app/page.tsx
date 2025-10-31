@@ -134,9 +134,16 @@ export default function Home() {
               </div>
 
               {/* Floating NFT Card */}
-              <div className="absolute -top-4 -right-4 bg-base-200/90 backdrop-blur-xl rounded-2xl p-4 border border-dayak-green-600/20 shadow-xl w-48 animate-float">
-                <div className="w-full h-32 bg-gradient-to-br from-dayak-green-400 to-dayak-green-600 rounded-xl mb-3 flex items-center justify-center text-white text-2xl">
-                  🎨
+              <div className="absolute -top-4 -right-4 bg-base-200/90 backdrop-blur-xl rounded-2xl p-4 border border-dayak-green-600/20 shadow-xl w-48 animate-float overflow-hidden">
+                <div className="w-full h-32 bg-gradient-to-br from-dayak-green-400 via-dayak-green-500 to-dayak-green-600 rounded-xl mb-3 flex items-center justify-center text-white text-6xl relative overflow-hidden group">
+                  {/* Animated gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-dayak-green-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* NFT Placeholder with Icon */}
+                  <div className="relative z-10 flex flex-col items-center justify-center">
+                    <span className="text-5xl mb-1 animate-bounce" style={{ animationDuration: '2s' }}>🎨</span>
+                    <span className="text-xs text-white/80 font-semibold">NFT</span>
+                  </div>
                 </div>
                 <div className="text-sm font-semibold mb-1">Bekantan NFT</div>
                 <div className="text-xs text-base-content/60 mb-2">150 WSP</div>
