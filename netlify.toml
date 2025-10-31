@@ -1,8 +1,7 @@
 [build]
   base = "packages/nextjs/"
   command = "NEXT_PUBLIC_IGNORE_BUILD_ERROR=true yarn build"
-  publish = "out"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "18"
-  NPM_VERSION = "8"
