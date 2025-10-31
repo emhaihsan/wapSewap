@@ -19,10 +19,8 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
   const [showListModal, setShowListModal] = useState(false);
   const [listPrice, setListPrice] = useState("");
   const [usdPrice, setUsdPrice] = useState("0.00");
-  const [wspApproved, setWspApproved] = useState(false);
   const [nftName, setNftName] = useState(`NFT #${tokenId}`);
   const [nftImageUrl, setNftImageUrl] = useState(imageUrl || "");
-  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
 
   const { data: marketplaceInfo } = useDeployedContractInfo("NFTMarketplace");
   const marketplaceAddress = marketplaceInfo?.address ?? ZERO_ADDRESS;
@@ -101,7 +99,6 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
   const isApproved = marketplaceAddress ? approvedAddress?.toLowerCase() === marketplaceAddress.toLowerCase() : false;
   const isListed = listing && (listing as any)[3]; // active field
   const listingPrice = listing ? (listing as any)[2] : 0n; // price field
-  const listingSeller = listing ? (listing as any)[1] : null; // seller field
   const hasEnoughWSP = wspBalance ? wspBalance >= listingPrice : false;
   const wspAllowanceEnough = wspAllowance ? wspAllowance >= listingPrice : false;
 
@@ -111,14 +108,14 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
     try {
       const wspValue = parseFloat(wspAmount);
       const [wspReserve, susdcReserve] = reserves as [bigint, bigint];
-      
+
       if (wspReserve === 0n || susdcReserve === 0n) return "0.00";
-      
+
       // Calculate WSP to sUSDC rate: sUSDC_reserve / WSP_reserve
       const wspReserveFloat = Number(formatEther(wspReserve));
       const susdcReserveFloat = Number(formatUnits(susdcReserve, 6));
       const rate = susdcReserveFloat / wspReserveFloat;
-      
+
       return (wspValue * rate).toFixed(2);
     } catch {
       return "0.00";
@@ -268,7 +265,9 @@ export const NFTCard = ({ tokenId, imageUrl, onAction }: NFTCardProps) => {
           {isListed && (
             <div className="text-sm">
               <div className="font-semibold text-dayak-green-400">{formatEther(listingPrice)} WSP</div>
-              <div className="text-xs text-base-content/60">≈ {calculateSusdcPrice(formatEther(listingPrice))} sUSDC</div>
+              <div className="text-xs text-base-content/60">
+                ≈ {calculateSusdcPrice(formatEther(listingPrice))} sUSDC
+              </div>
             </div>
           )}
 

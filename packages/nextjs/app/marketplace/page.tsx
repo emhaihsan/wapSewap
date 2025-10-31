@@ -155,8 +155,8 @@ export default function Marketplace() {
                     <div className="flex-1">
                       <h4 className="font-bold text-lg mb-2">Mint Your NFT</h4>
                       <p className="text-sm text-base-content/70 mb-2">
-                        Click <strong>"Mint Your NFT"</strong> button, upload your image (PNG/JPEG, max 2MB), add name
-                        and description. Your artwork will be stored on IPFS and minted as an NFT.
+                        Click <strong>&quot;Mint Your NFT&quot;</strong> button, upload your image (PNG/JPEG, max 2MB),
+                        add name and description. Your artwork will be stored on IPFS and minted as an NFT.
                       </p>
                     </div>
                   </div>
@@ -171,8 +171,9 @@ export default function Marketplace() {
                     <div className="flex-1">
                       <h4 className="font-bold text-lg mb-2">List for Sale</h4>
                       <p className="text-sm text-base-content/70 mb-2">
-                        After minting, find your NFT in the marketplace grid. Click <strong>"List for Sale"</strong>,
-                        set your price in WSP tokens, and confirm the transaction.
+                        After minting, find your NFT in the marketplace grid. Click{" "}
+                        <strong>&quot;List for Sale&quot;</strong>, set your price in WSP tokens, and confirm the
+                        transaction.
                       </p>
                       <div className="text-xs text-base-content/60 italic">💡 Platform fee: 1% of sale price</div>
                     </div>
@@ -188,8 +189,8 @@ export default function Marketplace() {
                     <div className="flex-1">
                       <h4 className="font-bold text-lg mb-2">Buy NFTs</h4>
                       <p className="text-sm text-base-content/70 mb-2">
-                        Browse listed NFTs below. Click <strong>"Buy Now"</strong> on any NFT you like. Make sure you
-                        have enough WSP tokens in your wallet to complete the purchase.
+                        Browse listed NFTs below. Click <strong>&quot;Buy Now&quot;</strong> on any NFT you like. Make
+                        sure you have enough WSP tokens in your wallet to complete the purchase.
                       </p>
                       <div className="text-xs text-base-content/60 italic">
                         💡 Get WSP tokens from the DEX or Faucet page

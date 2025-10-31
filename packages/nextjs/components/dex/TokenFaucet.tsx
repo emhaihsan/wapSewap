@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
@@ -42,12 +42,12 @@ export const TokenFaucet = () => {
   useEffect(() => {
     const updateCooldowns = () => {
       const now = Math.floor(Date.now() / 1000);
-      
+
       if (wspFaucetInfo) {
         const wspNext = Number(wspFaucetInfo[0]);
         setWspCooldown(Math.max(0, wspNext - now));
       }
-      
+
       if (usdcFaucetInfo) {
         const usdcNext = Number(usdcFaucetInfo[0]);
         setUsdcCooldown(Math.max(0, usdcNext - now));
@@ -92,9 +92,7 @@ export const TokenFaucet = () => {
       <div className="card bg-base-200 border border-dayak-green-900/30">
         <div className="card-body">
           <h3 className="card-title text-dayak-green-400">🚰 Token Faucet</h3>
-          <p className="text-base-content/70 text-sm">
-            Connect your wallet to claim test tokens for DEX trading.
-          </p>
+          <p className="text-base-content/70 text-sm">Connect your wallet to claim test tokens for DEX trading.</p>
           <div className="text-center py-4">
             <button className="btn btn-sm btn-disabled" disabled>
               Connect Wallet First
@@ -127,9 +125,7 @@ export const TokenFaucet = () => {
             </div>
             <div className="text-right">
               {wspCooldown > 0 ? (
-                <div className="text-xs text-base-content/60">
-                  Next: {formatTime(wspCooldown)}
-                </div>
+                <div className="text-xs text-base-content/60">Next: {formatTime(wspCooldown)}</div>
               ) : (
                 <button
                   className="btn btn-xs btn-primary bg-dayak-green-600 hover:bg-dayak-green-700 border-none"
@@ -155,9 +151,7 @@ export const TokenFaucet = () => {
             </div>
             <div className="text-right">
               {usdcCooldown > 0 ? (
-                <div className="text-xs text-base-content/60">
-                  Next: {formatTime(usdcCooldown)}
-                </div>
+                <div className="text-xs text-base-content/60">Next: {formatTime(usdcCooldown)}</div>
               ) : (
                 <button
                   className="btn btn-xs btn-primary bg-blue-600 hover:bg-blue-700 border-none"
@@ -172,8 +166,18 @@ export const TokenFaucet = () => {
         </div>
 
         <div className="alert alert-info mt-4">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="stroke-current shrink-0 w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
           </svg>
           <span className="text-xs">
             These are testnet tokens with no real value. Use them to test DEX functionality.

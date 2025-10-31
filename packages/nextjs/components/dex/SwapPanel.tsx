@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { formatEther, formatUnits, parseEther, parseUnits } from "viem";
 import { useAccount } from "wagmi";
-import { useScaffoldContractRead, useScaffoldContractWrite, useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 
 export const SwapPanel = () => {
@@ -16,7 +16,7 @@ export const SwapPanel = () => {
   const { data: dexContract } = useDeployedContractInfo("SimpleDEX");
   const { data: wapsContract } = useDeployedContractInfo("WapsewapToken");
   const { data: usdcContract } = useDeployedContractInfo("SimpleUSDC");
-  
+
   const DEX_ADDRESS = dexContract?.address;
   const WAPS_ADDRESS = wapsContract?.address;
   const USDC_ADDRESS = usdcContract?.address;

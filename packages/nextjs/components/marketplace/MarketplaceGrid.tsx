@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { NFTCard } from "./NFTCard";
-import { useAccount } from "wagmi";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
-
 
 interface NFTData {
   tokenId: number;
@@ -19,7 +17,6 @@ interface NFTData {
 }
 
 export const MarketplaceGrid = () => {
-  const { address: connectedAddress } = useAccount();
   const [nfts, setNfts] = useState<NFTData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -69,7 +66,6 @@ export const MarketplaceGrid = () => {
     fetchNFTs();
   }, [totalSupply, refreshKey]);
 
-
   const handleRefresh = () => {
     setRefreshKey(prev => prev + 1);
   };
@@ -80,9 +76,7 @@ export const MarketplaceGrid = () => {
       <div className="mb-6 space-y-4">
         {/* Simple Controls Row */}
         <div className="flex justify-between items-center">
-          <div className="text-sm text-base-content/60">
-            Showing {nfts.length} NFTs
-          </div>
+          <div className="text-sm text-base-content/60">Showing {nfts.length} NFTs</div>
           <button className="btn btn-sm btn-circle btn-ghost" onClick={handleRefresh} title="Refresh">
             🔄
           </button>
