@@ -1,6 +1,6 @@
 [build]
   base = "packages/nextjs/"
-  command = "NEXT_PUBLIC_IGNORE_BUILD_ERROR=true yarn build && yarn next export -o out"
+  command = "NEXT_PUBLIC_IGNORE_BUILD_ERROR=true yarn build"
   publish = "out"
 
 [build.environment]
