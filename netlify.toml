@@ -1,3 +1,8 @@
 [build]
-  command = "yarn build && yarn next export -o out"
-  publish = "packages/nextjs/out"
+  base = "packages/nextjs/"
+  command = "NEXT_PUBLIC_IGNORE_BUILD_ERROR=true yarn build && yarn next export -o out"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "8"

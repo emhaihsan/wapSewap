@@ -1,23 +1,27 @@
-<div align="left">
-  <a href="https://lisk.com"><img alt="Lisk" src="./packages/nextjs/public/readme-banner.png" width="100%"></a>
+<div align="center">
+  <h1>🌿 wapSewap</h1>
+  <p><strong>Simple DeFi Platform for Token Swaps, NFT Minting, and Trading on Lisk Sepolia</strong></p>
+  <p>Built for <a href="https://www.speedrunlisk.xyz/">Lisk Speedrun 2025</a></p>
 </div>
 
 <br />
 
-Scaffold-Lisk is a fork of Scaffold-OP with minimal differences, providing additional dApp examples, native support for Superchain testnets, and more low-level instructions. We highly recommend the Scaffold-ETH2 docs as the primary guideline.
+wapSewap is a comprehensive DeFi platform built on Lisk Sepolia testnet, offering:
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+- 🔄 **Mini DEX**: Instant token swaps with 0.3% fee
+- 🎨 **NFT Gallery**: Mint, buy, and sell unique NFTs with IPFS storage
+- 🚰 **Faucet**: Get free testnet tokens to explore the platform
 
 ⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
+- ✅ **Simple User Interface**: Clean and intuitive design for seamless DeFi experience
 - 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
 - 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+- 🔥 **Token Faucet**: Get free WSP and sUSDC tokens for testing
+- 🔐 **Multi-Wallet Support**: Connect with MetaMask, WalletConnect, and more
 
 <div align="center" style="margin-top: 24px;">
-  <img alt="App demo" src="./packages/nextjs/public/scaffold-lisk-landing.png" width="100%">
+  <img alt="wapSewap Demo" src="./packages/nextjs/public/logo.png" width="200">
 </div>
 
 ## Requirements
@@ -30,13 +34,13 @@ Before you begin, you need to install the following tools:
 
 ## Quickstart
 
-To get started with Scaffold-Lisk, follow the steps below:
+To get started with wapSewap, follow the steps below:
 
 1. Clone this repo & install dependencies
 
 ```
-git clone https://github.com/LiskHQ/scaffold-lisk.git
-cd scaffold-lisk
+git clone https://github.com/emhaihsan/wapSwap.git
+cd wapSwap
 yarn install
 ```
 
@@ -62,19 +66,23 @@ This command deploys a test smart contract to the local network. The contract is
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+Visit your app on: `http://localhost:3000`. You can interact with wapSewap features:
+
+- **DEX**: Swap WSP and sUSDC tokens
+- **NFT Gallery**: Mint, list, and trade NFTs
+- **Faucet**: Get free testnet tokens
 
 Run smart contract test with `yarn hardhat:test`
 
-- Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-- Edit your frontend in `packages/nextjs/pages`
+- Edit your smart contracts in `packages/hardhat/contracts`
+- Edit your frontend in `packages/nextjs/app`
 - Edit your deployment scripts in `packages/hardhat/deploy`
 
-## Deploy Contracts to Superchain Testnet(s)
+## Deploy Contracts to Lisk Sepolia
 
-To deploy contracts to a remote testnet (e.g. Optimism Sepolia), follow the steps below:
+To deploy contracts to Lisk Sepolia testnet, follow the steps below:
 
-1. Get Superchain Sepolia ETH from the [Superchain Faucet](https://app.optimism.io/faucet)
+1. Get Lisk Sepolia ETH from the [Lisk Faucet](https://faucet.lisk.com/)
 
 2. Inside the `packages/hardhat` directory, copy `.env.example` to `.env`.
 
@@ -82,34 +90,92 @@ To deploy contracts to a remote testnet (e.g. Optimism Sepolia), follow the step
    cd packages/hardhat && cp .env.example .env
    ```
 
-3. Edit your `.env` to specify the environment variables. Only specifying the `DEPLOYER_PRIVATE_KEY` is necessary here. The contract will be deployed from the address associated with this private key, so make sure it has enough Sepolia ETH.
+3. Edit your `.env` to specify the environment variables:
 
    ```bash
-   DEPLOYER_PRIVATE_KEY = "your_private_key_with_sepolia_ETH";
+   DEPLOYER_PRIVATE_KEY = "your_private_key_with_lisk_sepolia_ETH";
+   LISK_SEPOLIA_RPC_URL = "https://rpc-sepolia.lisk.com";
    ```
 
-4. Inside `scaffold-lisk`, run
+4. Deploy to Lisk Sepolia:
 
    ```bash
-   yarn deploy --network-options
+   yarn deploy --network liskSepolia
    ```
 
-   Use spacebar to make your selection(s). This command deploys all smart contracts in `packages/hardhat/contracts` to the selected network(s). Alternatively, you can try
+   This command deploys all smart contracts to Lisk Sepolia testnet. If the deployment is successful, you will see the deployment tx hash on the terminal.
+
+## Environment Variables
+
+For NFT functionality, you need to configure Pinata IPFS:
+
+1. Create a free account at [Pinata](https://app.pinata.cloud/)
+2. Get your JWT token from Pinata dashboard
+3. Add to `.env.local`:
 
    ```bash
-   yarn deploy --network networkName
+   NEXT_PUBLIC_PINATA_JWT = "your_pinata_jwt_token";
+   NEXT_PUBLIC_ALCHEMY_API_KEY = "your_alchemy_api_key";
+   NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID = "your_walletconnect_project_id";
    ```
 
-   Network names are found in `hardhat.config.js`. Please ensure you have enough Sepolia ETH on all these Superchains. If the deployments are successful, you will see the deployment tx hash on the terminal.
+## Features
 
-## Adding Foundry
+### 🔄 Mini DEX
 
-Hardhat's NodeJS stack and cleaner deployment management makes it a better default for Scaffold-Lisk.
+- Swap WSP and sUSDC tokens instantly
+- 0.3% trading fee
+- Add/remove liquidity
+- Real-time pool statistics
 
-To add Foundry to Scaffold-Lisk, follow this simple [tutorial](https://hardhat.org/hardhat-runner/docs/advanced/hardhat-and-foundry) by Hardhat. We recommend users who want more robust and faster testing to add Foundry.
+### 🎨 NFT Gallery
 
-## Documentation
+- Mint NFTs with custom metadata
+- List NFTs for sale in WSP tokens
+- Buy/sell NFTs from other users
+- IPFS integration for decentralized storage
+- 1% marketplace fee
 
-We highly recommend visiting the original [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+### 🚰 Faucet
 
-To know more about its features, check out their [website](https://scaffoldeth.io).
+- Get 100 WSP tokens every 24 hours
+- Get 50 sUSDC tokens every 24 hours
+- No registration required
+
+## Deployment
+
+### Netlify Deployment
+
+1. Push your code to GitHub
+2. Connect your repository to Netlify
+3. Set environment variables in Netlify dashboard
+4. Build settings:
+   - **Build command**: `NEXT_PUBLIC_IGNORE_BUILD_ERROR=true yarn build && yarn next export -o out`
+   - **Publish directory**: `packages/nextjs/out`
+
+### Manual Deployment
+
+```bash
+cd packages/nextjs
+NEXT_PUBLIC_IGNORE_BUILD_ERROR=true yarn build && yarn next export -o out
+```
+
+Upload the `out` folder to your hosting provider.
+
+## Built With
+
+- **Next.js 14** - React framework
+- **TypeScript** - Type safety
+- **Tailwind CSS & DaisyUI** - Styling
+- **RainbowKit** - Wallet connection
+- **Wagmi & Viem** - Ethereum interaction
+- **Hardhat** - Smart contract development
+- **Pinata** - IPFS storage for NFTs
+
+## Contributing
+
+Built for **Lisk Speedrun 2025**. Feel free to fork and contribute!
+
+## License
+
+MIT License
